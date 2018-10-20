@@ -108,15 +108,22 @@ static unsigned int isNumber(char c) {
     return 0;
 }
 
-static unsigned int charToSingleNum(char c) {
-    return (unsigned int)(c - 30); 
+static size_t charToSingleNum(char c) {
+    return (size_t)(c - 0x30); 
 }
 
-static unsigned int charToDoubleNum(char c, char d) {
-    return (unsigned int) (((c - 30) * 10) + (d - 30));
+static size_t charToDoubleNum(char c, char d) {
+    return (size_t) (((c - 0x30) * 10) + (d - 0x30));
 }
 
-static void generate(char c, int num) {
+static size_t generate(char c, size_t num, size_t output_buffer_size, int buf_index, char* output_buffer) {
+    char seq_ch = c;
+    for (size_t i = 0; (i < num) && (buf_index < output_buffer_size); i++) {
+        output_buffer[buf_index] = ++seq_ch;
+        buf_index++;
+    }
+    printf("output in generate: %s\n", output_buffer);
+    return buf_index;
     
 }
 
