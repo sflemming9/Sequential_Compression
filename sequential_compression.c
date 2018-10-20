@@ -56,13 +56,13 @@ void compress(char * string_to_compress, char * output_buffer, size_t output_buf
 void decompress(char * string_to_decompress, char * output_buffer, size_t output_buffer_size) {
     /* 2. Implement */
 
-    int buf_index = 0;
-    int decomp_index = 0;
-
+    size_t buf_index = 0;
+    size_t decomp_index = 0;
 
     while (buf_index < output_buffer_size) {
 
         char curr = string_to_decompress[decomp_index];
+        printf("curr: %c\n", curr);
         decomp_index++;
         
         if (curr == '\0') break; // could be return?
@@ -72,22 +72,26 @@ void decompress(char * string_to_decompress, char * output_buffer, size_t output
             buf_index++;
         } else if (isNumber(curr)) {
             
-            decomp_index++;
             char next = string_to_decompress[decomp_index];
+            printf("next char: %c\n", next);
 
             if (isLetter(next)) {
                 // generate with the last inputted value in output_buffer as first letter and curr as number of times
+                //printf("buf_index = %zu, output_buffer[buf_index] = %c\n", buf_index, output_buffer[buf_index]);
+                buf_index = generate(output_buffer[buf_index - 1], charToSingleNum(curr), output_buffer_size, buf_index, output_buffer);
             } else if (isNumber(next)) {
+                decomp_index++;
                 // generate with the last inputted value in output_buffer as first letter and (curr*10 + next) as number of times 
+                buf_index = generate(output_buffer[buf_index], charToDoubleNum(curr, next), output_buffer_size, buf_index, output_buffer);
+            } else {
+                // same as if statement FIX 
+                buf_index = generate(output_buffer[buf_index - 1], charToSingleNum(curr), output_buffer_size, buf_index, output_buffer);
             }
 
-            if (next == '\0') break; // could be return?
-
-
-
+            //if (next == '\0') break; // could be return?
 
         }
-
+        printf("decompress output: %s, buf_index = %zu, output_b_s = %zu\n", output_buffer, buf_index, output_buffer_size);
     }
 
     // TODO Never go past the length of the buffer
@@ -139,6 +143,12 @@ int main()
     printf("to decompress: %s \n", decompress_this);
     //Implement line below
     //printf("Decompressed output: %s \n", xxxx );
+    
+    char test[] = "c3gj4";
+    char result[20];
+    decompress(test, result, sizeof(result));
+    printf("Result = %s\n", result);
+
 
 
 
