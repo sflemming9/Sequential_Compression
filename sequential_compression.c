@@ -44,9 +44,9 @@ Assumptions:
 
 static unsigned int isLetter(char c);
 static unsigned int isNumber(char c);
-static unsigned int charToSingleNum(char c);
-static unsigned int charToDoubleNum(char c, char d);
-static void generate(char c, int num);
+static size_t charToSingleNum(char c);
+static size_t charToDoubleNum(char c, char d);
+static size_t generate(char c, size_t num, size_t output_buffer_size, int buf_index, char* output_buffer);
 
 
 void compress(char * string_to_compress, char * output_buffer, size_t output_buffer_size) {
