@@ -4,11 +4,11 @@
    We've encountered a dataset that contains a lot of sub-sequences of monotonically increasing letters:
    Example sub-sequences: ab uvwx ijk
 
-   Implement a compression and decompression scheme that replaces 
-   sequential sub-strings with the starting letter and the number of 
+   Implement a compression and decompression scheme that replaces
+   sequential sub-strings with the starting letter and the number of
    letters that follow in the sequence:
 
-   Example Compress: 
+   Example Compress:
 
 Input:
 abcdghijkjklmnghijkabgabcdegaj
@@ -21,7 +21,7 @@ a[bcd] g[hijk] j[klmn] g[hijk] a[b] g a[bcde] g a j
 
 Decompression is the inverse of the above.
 
-Please implement: 
+Please implement:
 1. The compress function
 2. The decompress function
 
@@ -30,7 +30,9 @@ https://repl.it/languages/c
 
 Assumptions:
 - lower case letters only
-- starting with a letter
+- starting with a letter (for decompress)
+- output_buffer should be null terminated before function return
+- alphabet does not wrap around; begins with 'a' and ends with 'z'
 
 
 */
