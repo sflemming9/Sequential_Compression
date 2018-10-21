@@ -55,6 +55,7 @@ static size_t generate(char c, size_t num, size_t output_buffer_size, int buf_in
 static size_t checkNumValidity(char c, size_t num);
 static size_t emptyString(char* input);
 static char singleNumToChar(size_t num);
+static void nullTermBuffer(char* output_buffer, size_t output_buffer_size, int buf_index);
 
 
 void compress(char * string_to_compress, char * output_buffer, size_t output_buffer_size) {
@@ -76,13 +77,12 @@ void compress(char * string_to_compress, char * output_buffer, size_t output_buf
         printf("Outer while loop, curr = %c\n", curr);
         comp_index++;
 
+        if (curr == '\0') break;
+
         output_buffer[buf_index] = curr;
         buf_index++;
 
-        if (curr == '\0') break;
-
         char next = string_to_compress[comp_index];
-        printf("Outer while loop, next = %c\n", next);
         size_t count = 0;
 
         while (next == (curr + 1)) {
@@ -94,7 +94,6 @@ void compress(char * string_to_compress, char * output_buffer, size_t output_buf
             // TODO don't go out of bounds
 
         }
-        printf("count = %zu\n", count);
 
         if ((count > 0) && (count < 10)) {
             output_buffer[buf_index] = singleNumToChar(count);    // count can be single or double digit
@@ -108,11 +107,12 @@ void compress(char * string_to_compress, char * output_buffer, size_t output_buf
     }
 
     // Null terminate output buffer
-    if (buf_index == output_buffer_size) {
-        output_buffer[buf_index - 1] = '\0';
-    } else {
-        output_buffer[buf_index] = '\0';
-    }
+    nullTermBuffer(output_buffer, output_buffer_size, buf_index);
+    //if (buf_index == output_buffer_size) {
+    //    output_buffer[buf_index - 1] = '\0';
+    //} else {
+    //    output_buffer[buf_index] = '\0';
+    //}
 
 }
 
@@ -162,11 +162,12 @@ void decompress(char * string_to_decompress, char * output_buffer, size_t output
     }
 
     // Null terminate output buffer
-    if (buf_index == output_buffer_size) {
-        output_buffer[buf_index - 1] = '\0';
-    } else {
-        output_buffer[buf_index] = '\0';
-    }
+    nullTermBuffer(output_buffer, output_buffer_size, buf_index);
+    //if (buf_index == output_buffer_size) {
+    //    output_buffer[buf_index - 1] = '\0';
+    //} else {
+    //    output_buffer[buf_index] = '\0';
+    //}
 
 }
 
@@ -213,6 +214,16 @@ static char singleNumToChar(size_t num) {
     return (char)(num + 0x30);
 }
 
+static void nullTermBuffer(char* output_buffer, size_t output_buffer_size, int buf_index) {
+    
+    // Null terminate output buffer
+    if (buf_index == output_buffer_size) {
+        output_buffer[buf_index - 1] = '\0';
+    } else {
+        output_buffer[buf_index] = '\0';
+    }
+}
+
 int main()
 {
     char decompress_this[] = "c3j3d8js3bsj2k4bo3k";
@@ -227,6 +238,8 @@ int main()
     //printf("Decompressed output: %s \n", xxxx );
 
     /* Testing */
+
+    // Testing of compress function
     char ctest[] = "abc";
     char cresult[5];
     compress(ctest, cresult, sizeof(cresult));
@@ -247,6 +260,7 @@ int main()
     compress(ctest3, cresult3, sizeof(cresult3));
     printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", ctest3, cresult3, sizeof(cresult3));
 
+    // Testing of decompress function
     //char test[] = "c3gj4";
     //char result[3];
     //decompress(test, result, sizeof(result));
