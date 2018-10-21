@@ -92,6 +92,7 @@ void decompress(char * string_to_decompress, char * output_buffer, size_t output
             }
 
             if (checkNumValidity(output_buffer[buf_index - 1], num) == 0) {
+                output_buffer[buf_index] = '\0';
                 printf("Error: Data is corrupted.\n");
                 return;
             }
@@ -108,8 +109,6 @@ void decompress(char * string_to_decompress, char * output_buffer, size_t output
         output_buffer[buf_index] = '\0';
     }
 
-    // TODO Never go past the length of the buffer
-    //      always stop at the null terminator
     //      empty string?
     //      add '\0' to end of output buffer
 }
@@ -190,12 +189,27 @@ int main()
     char test4[] = "c20j4a8z3";
     char result4[100];
     decompress(test4, result4, sizeof(result4));
-    printf("Test = %s, Result = %s, sizeof(result) = %zu\n", test4, result4, sizeof(result4));
+    printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", test4, result4, sizeof(result4));
 
-    //char test5[] = "casdflkui";
-    //char result5[7];
-    //decompress(test5, result5, sizeof(result5));
-    //printf("Test = %s, Result = %s, sizeof(result) = %zu\n", test5, result5, sizeof(result5));
+    char test5[] = "casdflkui";
+    char result5[7];
+    decompress(test5, result5, sizeof(result5));
+    printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", test5, result5, sizeof(result5));
+
+    char test6[] = "casdflkui";
+    char result6[15];
+    decompress(test6, result6, sizeof(result6));
+    printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", test6, result6, sizeof(result6));
+
+    char test7[] = "w9";
+    char result7[15];
+    decompress(test7, result7, sizeof(result7));
+    printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", test7, result7, sizeof(result7));
+
+    char test8[] = "";
+    char result8[15];
+    decompress(test8, result8, sizeof(result8));
+    printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", test8, result8, sizeof(result8));
 
     // Testing of isLetter
     char ch = 'a';
