@@ -36,6 +36,7 @@ Assumptions:
 */
 
 #include <stdio.h>
+#include <assert.h>
 
 #define ASCII_a 0x61
 #define ASCII_z 0x7a
@@ -144,13 +145,21 @@ int main()
     //Implement line below
     //printf("Decompressed output: %s \n", xxxx );
     
+    /* Testing */
     char test[] = "c3gj4";
     char result[20];
     decompress(test, result, sizeof(result));
     printf("Result = %s\n", result);
 
+    // Testing of isLetter
+    char ch = 'a';
+    assert(isLetter(ch) == 1);
 
+    ch = 'z';
+    assert(isLetter(ch) == 1);
 
+    ch = 'A';
+    assert(isLetter(ch) == 0);
 
     return 0;
 }
