@@ -14,7 +14,7 @@ Input:
 abcdghijkjklmnghijkabgabcdegaj
 
 Output:
-a3 g4 j4 g4 a1 g a4 g a j
+a3g4j4g4a1ga4gaj
 
 visual aid:
 a[bcd] g[hijk] j[klmn] g[hijk] a[b] g a[bcde] g a j
@@ -240,7 +240,7 @@ static void nullTermBuffer(char* output_buffer, size_t output_buffer_size, int b
 
 /*  This function is used for printing error messages. */
 static void logError(char* errorMsg) {
-    printf("Error: %s\n", errorMsg);
+    //printf("Error: %s\n", errorMsg);  /* Commented out for clean execution. */
 }
 
 int main() {
@@ -250,11 +250,15 @@ int main() {
 
     printf("to compress: %s \n", compress_this);
     //Implement line below
-    //printf("Compressed output: %s \n", xxxx);
+    char compress_result[100];
+    compress(compress_this, compress_result, sizeof(compress_result));
+    printf("Compressed output: %s \n", compress_result);
 
     printf("to decompress: %s \n", decompress_this);
     //Implement line below
-    //printf("Decompressed output: %s \n", xxxx );
+    char decompress_result[100];
+    decompress(decompress_this, decompress_result, sizeof(decompress_result));
+    printf("Decompressed output: %s \n", decompress_result);
 
     /* Testing */
 
@@ -367,8 +371,6 @@ int main() {
     ch = '-';
     assert(isLetter(ch) == 0);
 
-    printf("isLetter unit tests passed.\n");
-
     // Testing of isNumber
     ch = 'a';
     assert(isNumber(ch) == 0);
@@ -394,8 +396,6 @@ int main() {
     ch = '-';
     assert(isNumber(ch) == 0);
 
-    printf("isNumber unit tests passed.\n");
-
     // Testing of charToSingleNum
     char num = '0';
     assert(charToSingleNum(num) == 0);
@@ -405,8 +405,6 @@ int main() {
 
     num = '9';
     assert(charToSingleNum(num) == 9);
-
-    printf("charToSingleNum unit tests passed.\n");
 
     // Testing of charToDoubleNum
     num = '0';
@@ -429,8 +427,6 @@ int main() {
     num2 = '0';
     assert(charToDoubleNum(num, num2) == 90);
 
-    printf("charToDoubleNum unit tests passed.\n");
-
     // Testing checkNumValidity
     ch = 'x';
     num = 1;
@@ -452,16 +448,12 @@ int main() {
     num = 1;
     assert(checkNumValidity(ch, num) == 0);
 
-    printf("checkNumValidity unit tests passed.\n");
-
     // Testing singleNumToChar
     num = 8;
     assert(singleNumToChar(num) == '8');
 
     num = 0;
     assert(singleNumToChar(num) == '0');
-
-    printf("singleNumToChar unit tests passed.\n");
 
     return 0;
 }
