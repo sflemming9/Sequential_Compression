@@ -1,0 +1,46 @@
+to compress: ytuvwxyghijcdhijklmbcdefklmnopqopqrscdefghicdefghhijhijqrstuvwxmnovghwssthijklmnopfghijklmnrstuqrstuv 
+to decompress: c3j3d8js3bsj2k4bo3k 
+Test = abc, Result = a2, sizeof(result) = 5
+
+Test = abcjklmn, Result = a2j4, sizeof(result) = 100
+
+Test = abcjlmnoab, Result = a2jl3a1, sizeof(result) = 100
+
+Test = abcjlmnoabcdefghijklmnopqrs, Result = a2jl3a18, sizeof(result) = 100
+
+Test = abcjklmn, Result = a2j, sizeof(result) = 4
+
+Error: output buffer size too small.
+Test = abcjlmnoabcdefghijklmnopqrs, Result = a2jl3a1, sizeof(result) = 8
+
+Test = aidjencls, Result = aidj, sizeof(result) = 5
+
+Error: Input string is empty.
+Test = , Result = , sizeof(result) = 5
+
+Test = c3gj4, Result = cd, sizeof(result) = 3
+
+Test = c3gj4, Result = cdefgjklmn, sizeof(result) = 20
+
+Test = c20, Result = cdefg, sizeof(result) = 6
+
+Test = c20, Result = cdefghijklmnopqrstuvw, sizeof(result) = 100
+
+Error: Data is corrupted.
+Test = c20j4a8z3, Result = cdefghijklmnopqrstuvwjklmnabcdefghiz, sizeof(result) = 100
+
+Test = casdflkui, Result = casdfl, sizeof(result) = 7
+
+Test = casdflkui, Result = casdflkui, sizeof(result) = 15
+
+Error: Data is corrupted.
+Test = w9, Result = w, sizeof(result) = 15
+
+Test = , Result = , sizeof(result) = 15
+
+isLetter unit tests passed.
+isNumber unit tests passed.
+charToSingleNum unit tests passed.
+charToDoubleNum unit tests passed.
+checkNumValidity unit tests passed.
+singleNumToChar unit tests passed.

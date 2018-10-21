@@ -32,7 +32,8 @@ Author: Sabrina Flemming
 
 Assumptions:
 - lower case letters only
-- starting with a letter (for decompress)
+- starting with a letter (not a number)
+- input string is null terminated
 - output_buffer should be null terminated before function return
 - alphabet does not wrap around; begins with 'a' and ends with 'z' ex. input data such as
 z10 is invalid
@@ -62,8 +63,8 @@ static void nullTermBuffer(char* output_buffer, size_t output_buffer_size, int b
 
 
 void compress(char * string_to_compress, char * output_buffer, size_t output_buffer_size) {
-    /* 1. Implement */
 
+    // Ensure input is not an empty string
     if (emptyString(string_to_compress)) {
         output_buffer[0] = '\0';
         printf("Error: Input string is empty.\n");
@@ -73,13 +74,13 @@ void compress(char * string_to_compress, char * output_buffer, size_t output_buf
     size_t buf_index = 0;
     size_t comp_index = 0;
 
-
+    // Continue until buf_index = (output_buffer_size - 1); need room for null-terminator
     while (buf_index < (output_buffer_size - 1)) {
 
         char curr = string_to_compress[comp_index];
         comp_index++;
 
-        if (curr == '\0') break;
+        if (curr == '\0') break;    // Break if we have reached the end of the input
 
         output_buffer[buf_index] = curr;
         buf_index++;
@@ -87,6 +88,7 @@ void compress(char * string_to_compress, char * output_buffer, size_t output_buf
         char next = string_to_compress[comp_index];
         size_t count = 0;
 
+        // While consequtive letters are found, increase count and continue to progress
         while (next == (curr + 1)) {
             count++;
             comp_index++;
@@ -94,7 +96,10 @@ void compress(char * string_to_compress, char * output_buffer, size_t output_buf
             next = string_to_compress[comp_index];
         }
 
-        if (buf_index >= output_buffer_size) break;
+        if (buf_index >= output_buffer_size) {
+            printf("Error: output buffer size too small.\n");
+            break;        
+        }
 
         // If count is > 0, it can be a single or double digit
         if ((count > 0) && (count < 10)) {
@@ -117,11 +122,11 @@ void compress(char * string_to_compress, char * output_buffer, size_t output_buf
 }
 
 void decompress(char * string_to_decompress, char * output_buffer, size_t output_buffer_size) {
-    /* 2. Implement */
 
     size_t buf_index = 0;
     size_t decomp_index = 0;
 
+    // Continue until buf_index = (output_buffer_size - 1); need room for null-terminator
     while (buf_index < (output_buffer_size - 1)) {
 
         char curr = string_to_decompress[decomp_index];
@@ -129,6 +134,7 @@ void decompress(char * string_to_decompress, char * output_buffer, size_t output
 
         if (curr == '\0') break;
 
+        // Check if curr is a letter or a number (number could be single or double digit)
         if (isLetter(curr)) {
             output_buffer[buf_index] = curr;
             buf_index++;
@@ -136,21 +142,23 @@ void decompress(char * string_to_decompress, char * output_buffer, size_t output
             char next = string_to_decompress[decomp_index];
             size_t num;
 
+            // Check if next is a letter or a number; if a number, then the total number is double
+            // digits
             if (isNumber(next)) {
                 decomp_index++;
                 num = charToDoubleNum(curr, next);
-                // generate with the last inputted value in output_buffer as first letter and (curr*10 + next) as number of times
             } else {
                 num = charToSingleNum(curr);
-                // generate with the last inputted value in output_buffer as first letter and curr as number of times
             }
 
+            // Ensure data is valid
             if (checkNumValidity(output_buffer[buf_index - 1], num) == 0) {
                 output_buffer[buf_index] = '\0';
                 printf("Error: Data is corrupted.\n");
                 return;
             }
 
+            // Input the consequtive letters into the output_buffer
             buf_index = generate(output_buffer[buf_index - 1], num, output_buffer_size, buf_index, output_buffer);
         }
     }
