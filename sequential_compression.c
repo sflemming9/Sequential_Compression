@@ -34,12 +34,15 @@ Assumptions:
 - lower case letters only
 - starting with a letter (for decompress)
 - output_buffer should be null terminated before function return
-- alphabet does not wrap around; begins with 'a' and ends with 'z' ex. input data such as 
+- alphabet does not wrap around; begins with 'a' and ends with 'z' ex. input data such as
 z10 is invalid
 
 */
 
 #include <stdio.h>
+
+/*  Libraries included for testing purposes */
+#include <string.h>
 #include <assert.h>
 
 #define ASCII_a 0x61
@@ -91,11 +94,11 @@ void compress(char * string_to_compress, char * output_buffer, size_t output_buf
             next = string_to_compress[comp_index];
         }
 
-        if (buf_index >= output_buffer_size) break;        
+        if (buf_index >= output_buffer_size) break;
 
         // If count is > 0, it can be a single or double digit
         if ((count > 0) && (count < 10)) {
-            output_buffer[buf_index] = singleNumToChar(count);    
+            output_buffer[buf_index] = singleNumToChar(count);
             buf_index++;
         } else if (count >= 10) {
             output_buffer[buf_index] = singleNumToChar(count / 10);
@@ -228,88 +231,102 @@ int main()
     char ctest[] = "abc";
     char cresult[5];
     compress(ctest, cresult, sizeof(cresult));
-    printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", ctest, cresult, sizeof(cresult));
+    assert(strcmp(cresult, "a2") == 0);
+    //printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", ctest, cresult, sizeof(cresult));
 
     char ctest1[] = "abcjklmn";
     char cresult1[100];
     compress(ctest1, cresult1, sizeof(cresult1));
-    printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", ctest1, cresult1, sizeof(cresult1));
+//    printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", ctest1, cresult1, sizeof(cresult1));
+    assert(strcmp(cresult1, "a2j4") == 0);
 
     char ctest2[] = "abcjlmnoab";
     char cresult2[100];
     compress(ctest2, cresult2, sizeof(cresult2));
-    printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", ctest2, cresult2, sizeof(cresult2));
+    assert(strcmp(cresult2, "a2jl3a1") == 0);
+//    printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", ctest2, cresult2, sizeof(cresult2));
 
     char ctest3[] = "abcjlmnoabcdefghijklmnopqrs";
     char cresult3[100];
     compress(ctest3, cresult3, sizeof(cresult3));
-    printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", ctest3, cresult3, sizeof(cresult3));
+    assert(strcmp(cresult3, "a2jl3a18") == 0);
+    //printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", ctest3, cresult3, sizeof(cresult3));
 
     char ctest4[] = "abcjklmn";
     char cresult4[4];
     compress(ctest4, cresult4, sizeof(cresult4));
-    printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", ctest4, cresult4, sizeof(cresult4));
+    assert(strcmp(cresult4, "a2j") == 0);
+    //printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", ctest4, cresult4, sizeof(cresult4));
 
     char ctest5[] = "abcjlmnoabcdefghijklmnopqrs";
     char cresult5[8];
     compress(ctest5, cresult5, sizeof(cresult5));
-    printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", ctest5, cresult5, sizeof(cresult5));
+    assert(strcmp(cresult5, "a2jl3a1") == 0);
+    //printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", ctest5, cresult5, sizeof(cresult5));
 
     char ctest6[] = "aidjencls";
     char cresult6[5];
     compress(ctest6, cresult6, sizeof(cresult6));
-    printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", ctest6, cresult6, sizeof(cresult6));
+    assert(strcmp(cresult6, "aidj") == 0);
+    //printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", ctest6, cresult6, sizeof(cresult6));
 
     char ctest7[] = "";
     char cresult7[5];
     compress(ctest7, cresult7, sizeof(cresult7));
-    printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", ctest7, cresult7, sizeof(cresult7));
+//    printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", ctest7, cresult7, sizeof(cresult7));
 
     // Testing of decompress function
-    //char test[] = "c3gj4";
-    //char result[3];
-    //decompress(test, result, sizeof(result));
-    //printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", test, result, sizeof(result));
+    char test[] = "c3gj4";
+    char result[3];
+    decompress(test, result, sizeof(result));
+//    printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", test, result, sizeof(result));
+    assert(strcmp(result, "cd") == 0);
 
-    //char test1[] = "c3gj4";
-    //char result1[20];
-    //decompress(test1, result1, sizeof(result1));
+    char test1[] = "c3gj4";
+    char result1[20];
+    decompress(test1, result1, sizeof(result1));
+    assert(strcmp(result1, "cdefgjklmn") == 0);
     //printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", test1, result1, sizeof(result1));
 
-    //char test2[] = "c20";
-    //char result2[6];
-    //decompress(test2, result2, sizeof(result2));
+    char test2[] = "c20";
+    char result2[6];
+    decompress(test2, result2, sizeof(result2));
+    assert(strcmp(result2, "cdefg") == 0);
     //printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", test2, result2, sizeof(result2));
 
-    //char test3[] = "c20";
-    //char result3[100];
-    //decompress(test3, result3, sizeof(result3));
+    char test3[] = "c20";
+    char result3[100];
+    decompress(test3, result3, sizeof(result3));
+    assert(strcmp(result3, "cdefghijklmnopqrstuvw") == 0);
     //printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", test3, result3, sizeof(result3));
 
-    //char test4[] = "c20j4a8z3";
-    //char result4[100];
-    //decompress(test4, result4, sizeof(result4));
-    //printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", test4, result4, sizeof(result4));
+    char test4[] = "c20j4a8z3";
+    char result4[100];
+    decompress(test4, result4, sizeof(result4));
+//    printf("Testtest4= result4,, Result = %s, sizeof(result) = %zu\n\n", test4, result4, sizeof(result4));
 
-    //char test5[] = "casdflkui";
-    //char result5[7];
-    //decompress(test5, result5, sizeof(result5));
+    char test5[] = "casdflkui";
+    char result5[7];
+    decompress(test5, result5, sizeof(result5));
+    assert(strcmp(result5, "casdfl") == 0);
     //printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", test5, result5, sizeof(result5));
 
-    //char test6[] = "casdflkui";
-    //char result6[15];
-    //decompress(test6, result6, sizeof(result6));
+    char test6[] = "casdflkui";
+    char result6[15];
+    decompress(test6, result6, sizeof(result6));
+    assert(strcmp(result6, "casdflkui") == 0);
     //printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", test6, result6, sizeof(result6));
 
-    //char test7[] = "w9";
-    //char result7[15];
-    //decompress(test7, result7, sizeof(result7));
-    //printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", test7, result7, sizeof(result7));
+    char test7[] = "w9";
+    char result7[15];
+    decompress(test7, result7, sizeof(result7));
+//    printf("Test = result7,, Result = %s, sizeof(result) = %zu\n\n", test7, result7, sizeof(result7));
 
-    //char test8[] = "";
-    //char result8[15];
-    //decompress(test8, result8, sizeof(result8));
-    //printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", test8, result8, sizeof(result8));
+    char test8[] = "";
+    char result8[15];
+    decompress(test8, result8, sizeof(result8));
+    assert(strcmp(result8, "") == 0);
+//    printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", test8, result8, sizeof(result8));
 
     // Testing of isLetter
     char ch = 'a';
