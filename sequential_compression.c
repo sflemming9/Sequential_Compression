@@ -38,6 +38,14 @@ Assumptions:
 - alphabet does not wrap around; begins with 'a' and ends with 'z' ex. input data such as
 z10 is invalid
 
+Compilation Instructions:
+- gcc is used to compile the executable, using the C99 standard, with the following command:
+gcc sequential_compression.c -Wall -std=c99 -o sc_output
+
+Running the Program:
+- Simply run the executable as normal (see below)
+./sc_output
+
 */
 
 #include <stdio.h>
@@ -46,11 +54,13 @@ z10 is invalid
 #include <string.h>
 #include <assert.h>
 
+/*  Macros that define ASCII Constants */
 #define ASCII_a 0x61
 #define ASCII_z 0x7a
 #define ASCII_0 0x30
 #define ASCII_9 0x39
 
+/*  Function prototypes */
 static char isLetter(char c);
 static char isNumber(char c);
 static size_t charToSingleNum(char c);
