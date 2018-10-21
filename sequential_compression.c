@@ -89,9 +89,6 @@ void compress(char * string_to_compress, char * output_buffer, size_t output_buf
             comp_index++;
             curr = next;
             next = string_to_compress[comp_index];
-
-            // TODO don't go out of bounds
-
         }
 
         if (buf_index >= output_buffer_size) break;        
@@ -172,11 +169,11 @@ static unsigned int isNumber(char c) {
 }
 
 static size_t charToSingleNum(char c) {
-    return (size_t)(c - 0x30);
+    return (size_t)(c - ASCII_0);
 }
 
 static size_t charToDoubleNum(char c, char d) {
-    return (size_t) (((c - 0x30) * 10) + (d - 0x30));
+    return (size_t) (((c - ASCII_0) * 10) + (d - ASCII_0));
 }
 
 static size_t generate(char c, size_t num, size_t output_buffer_size, int buf_index, char* output_buffer) {
@@ -199,7 +196,7 @@ static size_t emptyString(char* input) {
 }
 
 static char singleNumToChar(size_t num) {
-    return (char)(num + 0x30);
+    return (char)(num + ASCII_0);
 }
 
 static void nullTermBuffer(char* output_buffer, size_t output_buffer_size, int buf_index) {
@@ -257,6 +254,16 @@ int main()
     char cresult5[8];
     compress(ctest5, cresult5, sizeof(cresult5));
     printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", ctest5, cresult5, sizeof(cresult5));
+
+    char ctest6[] = "aidjencls";
+    char cresult6[5];
+    compress(ctest6, cresult6, sizeof(cresult6));
+    printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", ctest6, cresult6, sizeof(cresult6));
+
+    char ctest7[] = "";
+    char cresult7[5];
+    compress(ctest7, cresult7, sizeof(cresult7));
+    printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", ctest7, cresult7, sizeof(cresult7));
 
     // Testing of decompress function
     //char test[] = "c3gj4";
