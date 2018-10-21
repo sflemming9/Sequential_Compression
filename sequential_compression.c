@@ -28,12 +28,14 @@ Please implement:
 Use gcc on your machine or an online c tool such as:
 https://repl.it/languages/c
 
+Author: Sabrina Flemming
+
 Assumptions:
 - lower case letters only
 - starting with a letter (for decompress)
 - output_buffer should be null terminated before function return
 - alphabet does not wrap around; begins with 'a' and ends with 'z'
-
+    - ex. input data such as z10 is invalid
 
 */
 
@@ -51,14 +53,36 @@ static size_t charToSingleNum(char c);
 static size_t charToDoubleNum(char c, char d);
 static size_t generate(char c, size_t num, size_t output_buffer_size, int buf_index, char* output_buffer);
 static size_t checkNumValidity(char c, size_t num);
+static size_t emptyString(char* input);
 
 
 void compress(char * string_to_compress, char * output_buffer, size_t output_buffer_size) {
     /* 1. Implement */
+
+    if (emptyString(string_to_compress)) {
+        printf("Error: Input string is empty.\n");
+        return;
+    }
+
+    size_t buf_index = 0;
+    size_t comp_index = 0;
+
+    char curr = string_to_compress[comp_index];
+
+    while (buf_index < (output_buffer_size - 1)) {
+    
+    }
+
 }
 
 void decompress(char * string_to_decompress, char * output_buffer, size_t output_buffer_size) {
     /* 2. Implement */
+
+    if (emptyString(string_to_decompress)) {
+        output_buffer[0] = '\0';
+        printf("Error: Input string is empty.\n");
+        return;
+    }
 
     size_t buf_index = 0;
     size_t decomp_index = 0;
@@ -66,29 +90,24 @@ void decompress(char * string_to_decompress, char * output_buffer, size_t output
     while (buf_index < (output_buffer_size - 1)) {
 
         char curr = string_to_decompress[decomp_index];
-        //printf("curr: %c\n", curr);
         decomp_index++;
 
-        if (curr == '\0') break; // could be return?
+        if (curr == '\0') break;
 
         if (isLetter(curr)) {
             output_buffer[buf_index] = curr;
             buf_index++;
         } else if (isNumber(curr)) {
-
             char next = string_to_decompress[decomp_index];
-            //printf("next char: %c\n", next);
             size_t num;
 
             if (isNumber(next)) {
                 decomp_index++;
                 num = charToDoubleNum(curr, next);
                 // generate with the last inputted value in output_buffer as first letter and (curr*10 + next) as number of times
-                //buf_index = generate(output_buffer[buf_index - 1], charToDoubleNum(curr, next), output_buffer_size, buf_index, output_buffer);
             } else {
                 num = charToSingleNum(curr);
                 // generate with the last inputted value in output_buffer as first letter and curr as number of times
-                //buf_index = generate(output_buffer[buf_index - 1], charToSingleNum(curr), output_buffer_size, buf_index, output_buffer);
             }
 
             if (checkNumValidity(output_buffer[buf_index - 1], num) == 0) {
@@ -98,7 +117,6 @@ void decompress(char * string_to_decompress, char * output_buffer, size_t output
             }
 
             buf_index = generate(output_buffer[buf_index - 1], num, output_buffer_size, buf_index, output_buffer);
-
         }
     }
 
@@ -109,8 +127,6 @@ void decompress(char * string_to_decompress, char * output_buffer, size_t output
         output_buffer[buf_index] = '\0';
     }
 
-    //      empty string?
-    //      add '\0' to end of output buffer
 }
 
 static unsigned int isLetter(char c) {
@@ -150,6 +166,10 @@ static size_t checkNumValidity(char c, size_t num) {
     if ((c + num) > ASCII_z) return 0;
 
     return 1;
+}
+
+static size_t emptyString(char* input) {
+    return (input[0] == '\0');
 }
 
 int main()
