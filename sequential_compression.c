@@ -51,23 +51,23 @@ z10 is invalid
 #define ASCII_0 0x30
 #define ASCII_9 0x39
 
-static unsigned int isLetter(char c);
-static unsigned int isNumber(char c);
+static char isLetter(char c);
+static char isNumber(char c);
 static size_t charToSingleNum(char c);
 static size_t charToDoubleNum(char c, char d);
 static size_t generate(char c, size_t num, size_t output_buffer_size, int buf_index, char* output_buffer);
-static size_t checkNumValidity(char c, size_t num);
-static size_t emptyString(char* input);
+static char checkNumValidity(char c, size_t num);
+static char emptyString(char* input);
 static char singleNumToChar(size_t num);
 static void nullTermBuffer(char* output_buffer, size_t output_buffer_size, int buf_index);
-
+static void logError(char* errorMsg);
 
 void compress(char * string_to_compress, char * output_buffer, size_t output_buffer_size) {
 
     // Ensure input is not an empty string
     if (emptyString(string_to_compress)) {
         output_buffer[0] = '\0';
-        printf("Error: Input string is empty.\n");
+        logError("Input string is empty");
         return;
     }
 
@@ -97,8 +97,8 @@ void compress(char * string_to_compress, char * output_buffer, size_t output_buf
         }
 
         if (buf_index >= output_buffer_size) {
-            printf("Error: output buffer size too small.\n");
-            break;        
+            logError("Output buffer size too small.");
+            break;
         }
 
         // If count is > 0, it can be a single or double digit
@@ -109,9 +109,10 @@ void compress(char * string_to_compress, char * output_buffer, size_t output_buf
             output_buffer[buf_index] = singleNumToChar(count / 10);
             buf_index++;
             if (buf_index >= (output_buffer_size - 1)) {
-                printf("Error: output buffer size too small.\n");
+                logError("Output buffer size too small.");
                 break;
             }
+
             output_buffer[buf_index] = singleNumToChar(count % 10);
             buf_index++;
         }
@@ -154,11 +155,11 @@ void decompress(char * string_to_decompress, char * output_buffer, size_t output
             // Ensure data is valid
             if (checkNumValidity(output_buffer[buf_index - 1], num) == 0) {
                 output_buffer[buf_index] = '\0';
-                printf("Error: Data is corrupted.\n");
+                logError("Data is corrupted.");
                 return;
             }
 
-            // Input the consequtive letters into the output_buffer
+            // Input the consecutive letters into the output_buffer
             buf_index = generate(output_buffer[buf_index - 1], num, output_buffer_size, buf_index, output_buffer);
         }
     }
