@@ -50,6 +50,7 @@ static unsigned int isNumber(char c);
 static size_t charToSingleNum(char c);
 static size_t charToDoubleNum(char c, char d);
 static size_t generate(char c, size_t num, size_t output_buffer_size, int buf_index, char* output_buffer);
+static size_t checkNumValidity(char c, size_t num);
 
 
 void compress(char * string_to_compress, char * output_buffer, size_t output_buffer_size) {
@@ -126,7 +127,7 @@ static unsigned int isNumber(char c) {
 }
 
 static size_t charToSingleNum(char c) {
-    return (size_t)(c - 0x30); 
+    return (size_t)(c - 0x30);
 }
 
 static size_t charToDoubleNum(char c, char d) {
@@ -135,13 +136,21 @@ static size_t charToDoubleNum(char c, char d) {
 
 static size_t generate(char c, size_t num, size_t output_buffer_size, int buf_index, char* output_buffer) {
     char seq_ch = c;
+    //printf("generate: seq_ch = %c\n", seq_ch);
+    //printf("generate: buf_index = %d\n", buf_index);
+    //printf("entering generate: output = %s\n", output_buffer);
     for (size_t i = 0; (i < num) && (buf_index < output_buffer_size); i++) {
         output_buffer[buf_index] = ++seq_ch;
         buf_index++;
+        //printf("generate: output = %s\n", output_buffer);
     }
-    printf("output in generate: %s\n", output_buffer);
     return buf_index;
-    
+}
+
+static size_t checkNumValidity(char c, size_t num) {
+    if ((c + num) > ASCII_z) return 0;
+
+    return 1;
 }
 
 int main()
@@ -253,4 +262,5 @@ int main()
     printf("charToDoubleNum unit tests passed.\n");
     return 0;
 }
+
 
