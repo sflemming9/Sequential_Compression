@@ -34,8 +34,8 @@ Assumptions:
 - lower case letters only
 - starting with a letter (for decompress)
 - output_buffer should be null terminated before function return
-- alphabet does not wrap around; begins with 'a' and ends with 'z'
-    - ex. input data such as z10 is invalid
+- alphabet does not wrap around; begins with 'a' and ends with 'z' ex. input data such as 
+z10 is invalid
 
 */
 
@@ -74,7 +74,6 @@ void compress(char * string_to_compress, char * output_buffer, size_t output_buf
     while (buf_index < (output_buffer_size - 1)) {
 
         char curr = string_to_compress[comp_index];
-        printf("Outer while loop, curr = %c\n", curr);
         comp_index++;
 
         if (curr == '\0') break;
@@ -95,12 +94,19 @@ void compress(char * string_to_compress, char * output_buffer, size_t output_buf
 
         }
 
+        if (buf_index >= output_buffer_size) break;        
+
+        // If count is > 0, it can be a single or double digit
         if ((count > 0) && (count < 10)) {
-            output_buffer[buf_index] = singleNumToChar(count);    // count can be single or double digit
+            output_buffer[buf_index] = singleNumToChar(count);    
             buf_index++;
         } else if (count >= 10) {
             output_buffer[buf_index] = singleNumToChar(count / 10);
             buf_index++;
+            if (buf_index >= (output_buffer_size - 1)) {
+                printf("Error: output buffer size too small.\n");
+                break;
+            }
             output_buffer[buf_index] = singleNumToChar(count % 10);
             buf_index++;
         }
@@ -108,22 +114,10 @@ void compress(char * string_to_compress, char * output_buffer, size_t output_buf
 
     // Null terminate output buffer
     nullTermBuffer(output_buffer, output_buffer_size, buf_index);
-    //if (buf_index == output_buffer_size) {
-    //    output_buffer[buf_index - 1] = '\0';
-    //} else {
-    //    output_buffer[buf_index] = '\0';
-    //}
-
 }
 
 void decompress(char * string_to_decompress, char * output_buffer, size_t output_buffer_size) {
     /* 2. Implement */
-
-    if (emptyString(string_to_decompress)) {
-        output_buffer[0] = '\0';
-        printf("Error: Input string is empty.\n");
-        return;
-    }
 
     size_t buf_index = 0;
     size_t decomp_index = 0;
@@ -163,12 +157,6 @@ void decompress(char * string_to_decompress, char * output_buffer, size_t output
 
     // Null terminate output buffer
     nullTermBuffer(output_buffer, output_buffer_size, buf_index);
-    //if (buf_index == output_buffer_size) {
-    //    output_buffer[buf_index - 1] = '\0';
-    //} else {
-    //    output_buffer[buf_index] = '\0';
-    //}
-
 }
 
 static unsigned int isLetter(char c) {
@@ -215,7 +203,7 @@ static char singleNumToChar(size_t num) {
 }
 
 static void nullTermBuffer(char* output_buffer, size_t output_buffer_size, int buf_index) {
-    
+
     // Null terminate output buffer
     if (buf_index == output_buffer_size) {
         output_buffer[buf_index - 1] = '\0';
@@ -259,6 +247,16 @@ int main()
     char cresult3[100];
     compress(ctest3, cresult3, sizeof(cresult3));
     printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", ctest3, cresult3, sizeof(cresult3));
+
+    char ctest4[] = "abcjklmn";
+    char cresult4[4];
+    compress(ctest4, cresult4, sizeof(cresult4));
+    printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", ctest4, cresult4, sizeof(cresult4));
+
+    char ctest5[] = "abcjlmnoabcdefghijklmnopqrs";
+    char cresult5[8];
+    compress(ctest5, cresult5, sizeof(cresult5));
+    printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", ctest5, cresult5, sizeof(cresult5));
 
     // Testing of decompress function
     //char test[] = "c3gj4";
