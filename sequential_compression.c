@@ -54,12 +54,14 @@ static size_t charToDoubleNum(char c, char d);
 static size_t generate(char c, size_t num, size_t output_buffer_size, int buf_index, char* output_buffer);
 static size_t checkNumValidity(char c, size_t num);
 static size_t emptyString(char* input);
+static char singleNumToChar(size_t num);
 
 
 void compress(char * string_to_compress, char * output_buffer, size_t output_buffer_size) {
     /* 1. Implement */
 
     if (emptyString(string_to_compress)) {
+        output_buffer[0] = '\0';
         printf("Error: Input string is empty.\n");
         return;
     }
@@ -67,10 +69,45 @@ void compress(char * string_to_compress, char * output_buffer, size_t output_buf
     size_t buf_index = 0;
     size_t comp_index = 0;
 
-    char curr = string_to_compress[comp_index];
 
     while (buf_index < (output_buffer_size - 1)) {
-    
+
+        char curr = string_to_compress[comp_index];
+        comp_index++;
+
+        output_buffer[buf_index] = curr;
+        buf_index++;
+
+        if (curr == '\0') break;
+
+        char next = string_to_compress[comp_index];
+        size_t count = 0;
+
+        while (next == (curr + 1)) {
+            count++;
+            comp_index++;
+            next = string_to_compress[comp_index];
+            curr = next;
+
+            // TODO don't go out of bounds
+
+        }
+
+        if ((count > 0) && (count < 10)) {
+            output_buffer[buf_index] = singleNumToChar(count);    // count can be single or double digit
+        } else if (count >= 10) {
+            output_buffer[buf_index] = singleNumToChar(count / 10);
+            buf_index++;
+            output_buffer[buf_index] = singleNumToChar(count % 10);
+            
+        }
+    }
+
+    // Null terminate output buffer
+    if (buf_index == output_buffer_size) {
+        output_buffer[buf_index - 1] = '\0';
+    } else {
+        output_buffer[buf_index] = '\0';
     }
 
 }
@@ -172,6 +209,10 @@ static size_t emptyString(char* input) {
     return (input[0] == '\0');
 }
 
+static char singleNumToChar(size_t num) {
+    return (char)(num + 0x30);
+}
+
 int main()
 {
     char decompress_this[] = "c3j3d8js3bsj2k4bo3k";
@@ -186,50 +227,55 @@ int main()
     //printf("Decompressed output: %s \n", xxxx );
 
     /* Testing */
-    char test[] = "c3gj4";
-    char result[3];
-    decompress(test, result, sizeof(result));
-    printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", test, result, sizeof(result));
+    char ctest[] = "abc";
+    char cresult[5];
+    compress(ctest, cresult, sizeof(cresult));
+    printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", ctest, cresult, sizeof(cresult));
 
-    char test1[] = "c3gj4";
-    char result1[20];
-    decompress(test1, result1, sizeof(result1));
-    printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", test1, result1, sizeof(result1));
+    //char test[] = "c3gj4";
+    //char result[3];
+    //decompress(test, result, sizeof(result));
+    //printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", test, result, sizeof(result));
 
-    char test2[] = "c20";
-    char result2[6];
-    decompress(test2, result2, sizeof(result2));
-    printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", test2, result2, sizeof(result2));
+    //char test1[] = "c3gj4";
+    //char result1[20];
+    //decompress(test1, result1, sizeof(result1));
+    //printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", test1, result1, sizeof(result1));
 
-    char test3[] = "c20";
-    char result3[100];
-    decompress(test3, result3, sizeof(result3));
-    printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", test3, result3, sizeof(result3));
+    //char test2[] = "c20";
+    //char result2[6];
+    //decompress(test2, result2, sizeof(result2));
+    //printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", test2, result2, sizeof(result2));
 
-    char test4[] = "c20j4a8z3";
-    char result4[100];
-    decompress(test4, result4, sizeof(result4));
-    printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", test4, result4, sizeof(result4));
+    //char test3[] = "c20";
+    //char result3[100];
+    //decompress(test3, result3, sizeof(result3));
+    //printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", test3, result3, sizeof(result3));
 
-    char test5[] = "casdflkui";
-    char result5[7];
-    decompress(test5, result5, sizeof(result5));
-    printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", test5, result5, sizeof(result5));
+    //char test4[] = "c20j4a8z3";
+    //char result4[100];
+    //decompress(test4, result4, sizeof(result4));
+    //printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", test4, result4, sizeof(result4));
 
-    char test6[] = "casdflkui";
-    char result6[15];
-    decompress(test6, result6, sizeof(result6));
-    printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", test6, result6, sizeof(result6));
+    //char test5[] = "casdflkui";
+    //char result5[7];
+    //decompress(test5, result5, sizeof(result5));
+    //printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", test5, result5, sizeof(result5));
 
-    char test7[] = "w9";
-    char result7[15];
-    decompress(test7, result7, sizeof(result7));
-    printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", test7, result7, sizeof(result7));
+    //char test6[] = "casdflkui";
+    //char result6[15];
+    //decompress(test6, result6, sizeof(result6));
+    //printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", test6, result6, sizeof(result6));
 
-    char test8[] = "";
-    char result8[15];
-    decompress(test8, result8, sizeof(result8));
-    printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", test8, result8, sizeof(result8));
+    //char test7[] = "w9";
+    //char result7[15];
+    //decompress(test7, result7, sizeof(result7));
+    //printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", test7, result7, sizeof(result7));
+
+    //char test8[] = "";
+    //char result8[15];
+    //decompress(test8, result8, sizeof(result8));
+    //printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", test8, result8, sizeof(result8));
 
     // Testing of isLetter
     char ch = 'a';
@@ -319,6 +365,9 @@ int main()
     assert(charToDoubleNum(num, num2) == 90);
 
     printf("charToDoubleNum unit tests passed.\n");
+
+    // Testing checkNumValidity
+
     return 0;
 }
 
