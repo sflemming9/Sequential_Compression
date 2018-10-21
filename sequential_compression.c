@@ -55,11 +55,11 @@ static char isLetter(char c);
 static char isNumber(char c);
 static size_t charToSingleNum(char c);
 static size_t charToDoubleNum(char c, char d);
-static size_t generate(char c, size_t num, size_t output_buffer_size, int buf_index, char* output_buffer);
+static size_t generate(char c, size_t num, size_t output_buffer_size, size_t buf_index, char* output_buffer);
 static char checkNumValidity(char c, size_t num);
 static char emptyString(char* input);
 static char singleNumToChar(size_t num);
-static void nullTermBuffer(char* output_buffer, size_t output_buffer_size, int buf_index);
+static void nullTermBuffer(char* output_buffer, size_t output_buffer_size, size_t buf_index);
 static void logError(char* errorMsg);
 
 /* Testing Functions */
@@ -207,7 +207,7 @@ static size_t charToDoubleNum(char c, char d) {
 
 /*  This function inputs 'num' sequential letters into the output buffer without exceeding the
  *  output buffer size. The updated buf_index is returned. */
-static size_t generate(char c, size_t num, size_t output_buffer_size, int buf_index, char* output_buffer) {
+static size_t generate(char c, size_t num, size_t output_buffer_size, size_t buf_index, char* output_buffer) {
     char seq_ch = c;
     for (size_t i = 0; (i < num) && (buf_index < output_buffer_size); i++) {
         output_buffer[buf_index] = ++seq_ch;
@@ -239,7 +239,7 @@ static char singleNumToChar(size_t num) {
  *  current buf_index, the null terminator is inputted at buf_index (end of string). If the
  *  buf_index equals the output buffer size, the last character in the output buffer is overwritten
  *  with a null terminator so as to not exceed the output buffer size. */
-static void nullTermBuffer(char* output_buffer, size_t output_buffer_size, int buf_index) {
+static void nullTermBuffer(char* output_buffer, size_t output_buffer_size, size_t buf_index) {
 
     // Null terminate output buffer
     if (buf_index == output_buffer_size) {
