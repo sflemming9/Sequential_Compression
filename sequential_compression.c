@@ -161,6 +161,84 @@ int main()
     ch = 'A';
     assert(isLetter(ch) == 0);
 
+    ch = 'Z';
+    assert(isLetter(ch) == 0);
+
+    ch = '0';
+    assert(isLetter(ch) == 0);
+
+    ch = '9';
+    assert(isLetter(ch) == 0);
+
+    ch = '\0';
+    assert(isLetter(ch) == 0);
+
+    ch = '-';
+    assert(isLetter(ch) == 0);
+
+    printf("isLetter unit tests passed.\n");
+
+    // Testing of isNumber
+    ch = 'a';
+    assert(isNumber(ch) == 0);
+
+    ch = 'z';
+    assert(isNumber(ch) == 0);
+
+    ch = 'A';
+    assert(isNumber(ch) == 0);
+
+    ch = 'Z';
+    assert(isNumber(ch) == 0);
+
+    ch = '0';
+    assert(isNumber(ch) == 1);
+
+    ch = '9';
+    assert(isNumber(ch) == 1);
+
+    ch = '\0';
+    assert(isNumber(ch) == 0);
+
+    ch = '-';
+    assert(isNumber(ch) == 0);
+
+    printf("isNumber unit tests passed.\n");
+
+    // Testing of charToSingleNum
+    char num = '0';
+    assert(charToSingleNum(num) == 0);
+
+    num = '4';
+    assert(charToSingleNum(num) == 4);
+
+    num = '9';
+    assert(charToSingleNum(num) == 9);
+
+    printf("charToSingleNum unit tests passed.\n");
+
+    // Testing of charToDoubleNum
+    num = '0';
+    char num2 = '0';
+    assert(charToDoubleNum(num, num2) == 0);
+
+    num = '0';
+    num2 = '3';
+    assert(charToDoubleNum(num, num2) == 3);
+
+    num = '1';
+    num2 = '0';
+    assert(charToDoubleNum(num, num2) == 10);
+
+    num = '9';
+    num2 = '9';
+    assert(charToDoubleNum(num, num2) == 99);
+
+    num = '9';
+    num2 = '0';
+    assert(charToDoubleNum(num, num2) == 90);
+
+    printf("charToDoubleNum unit tests passed.\n");
     return 0;
 }
 
