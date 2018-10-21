@@ -62,39 +62,49 @@ void decompress(char * string_to_decompress, char * output_buffer, size_t output
     size_t buf_index = 0;
     size_t decomp_index = 0;
 
-    while (buf_index < output_buffer_size) {
+    while (buf_index < (output_buffer_size - 1)) {
 
         char curr = string_to_decompress[decomp_index];
-        printf("curr: %c\n", curr);
+        //printf("curr: %c\n", curr);
         decomp_index++;
-        
+
         if (curr == '\0') break; // could be return?
 
         if (isLetter(curr)) {
             output_buffer[buf_index] = curr;
             buf_index++;
         } else if (isNumber(curr)) {
-            
-            char next = string_to_decompress[decomp_index];
-            printf("next char: %c\n", next);
 
-            if (isLetter(next)) {
-                // generate with the last inputted value in output_buffer as first letter and curr as number of times
-                //printf("buf_index = %zu, output_buffer[buf_index] = %c\n", buf_index, output_buffer[buf_index]);
-                buf_index = generate(output_buffer[buf_index - 1], charToSingleNum(curr), output_buffer_size, buf_index, output_buffer);
-            } else if (isNumber(next)) {
+            char next = string_to_decompress[decomp_index];
+            //printf("next char: %c\n", next);
+            size_t num;
+
+            if (isNumber(next)) {
                 decomp_index++;
-                // generate with the last inputted value in output_buffer as first letter and (curr*10 + next) as number of times 
-                buf_index = generate(output_buffer[buf_index], charToDoubleNum(curr, next), output_buffer_size, buf_index, output_buffer);
+                num = charToDoubleNum(curr, next);
+                // generate with the last inputted value in output_buffer as first letter and (curr*10 + next) as number of times
+                //buf_index = generate(output_buffer[buf_index - 1], charToDoubleNum(curr, next), output_buffer_size, buf_index, output_buffer);
             } else {
-                // same as if statement FIX 
-                buf_index = generate(output_buffer[buf_index - 1], charToSingleNum(curr), output_buffer_size, buf_index, output_buffer);
+                num = charToSingleNum(curr);
+                // generate with the last inputted value in output_buffer as first letter and curr as number of times
+                //buf_index = generate(output_buffer[buf_index - 1], charToSingleNum(curr), output_buffer_size, buf_index, output_buffer);
             }
 
-            //if (next == '\0') break; // could be return?
+            if (checkNumValidity(output_buffer[buf_index - 1], num) == 0) {
+                printf("Error: Data is corrupted.\n");
+                return;
+            }
+
+            buf_index = generate(output_buffer[buf_index - 1], num, output_buffer_size, buf_index, output_buffer);
 
         }
-        printf("decompress output: %s, buf_index = %zu, output_b_s = %zu\n", output_buffer, buf_index, output_buffer_size);
+    }
+
+    // Null terminate output buffer
+    if (buf_index == output_buffer_size) {
+        output_buffer[buf_index - 1] = '\0';
+    } else {
+        output_buffer[buf_index] = '\0';
     }
 
     // TODO Never go past the length of the buffer
