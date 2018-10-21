@@ -168,26 +168,34 @@ void decompress(char * string_to_decompress, char * output_buffer, size_t output
     nullTermBuffer(output_buffer, output_buffer_size, buf_index);
 }
 
-static unsigned int isLetter(char c) {
+/*  This function returns a 1 if inputted char c is a letter, and 0 otherwise. */
+static char isLetter(char c) {
     if ((c >= ASCII_a) && (c <= ASCII_z)) return 1;
 
     return 0;
 }
 
-static unsigned int isNumber(char c) {
+/*  This function returns a 1 if inputted char c is a number (0-9), and 0 otherwise. */
+static char isNumber(char c) {
     if ((c >= ASCII_0) && (c <= ASCII_9)) return 1;
 
     return 0;
 }
 
+/*  This function returns the number value of the inputted char c. It is assumed c is between '0'
+ *  and '9'. */
 static size_t charToSingleNum(char c) {
     return (size_t)(c - ASCII_0);
 }
 
+/*  This function returns the two digit number value of the input 'cd'. It is assumed both c 
+ *  and d are between '0' and '9'. */
 static size_t charToDoubleNum(char c, char d) {
     return (size_t) (((c - ASCII_0) * 10) + (d - ASCII_0));
 }
 
+/*  This function inputs 'num' sequential letters into the output buffer without exceeding the 
+ *  output buffer size. The updated buf_index is returned. */
 static size_t generate(char c, size_t num, size_t output_buffer_size, int buf_index, char* output_buffer) {
     char seq_ch = c;
     for (size_t i = 0; (i < num) && (buf_index < output_buffer_size); i++) {
@@ -197,20 +205,29 @@ static size_t generate(char c, size_t num, size_t output_buffer_size, int buf_in
     return buf_index;
 }
 
-static size_t checkNumValidity(char c, size_t num) {
+/*  This function returns a 0 for invalid data and a 1 otherwise. Invalid data is characterized
+ *  by a number following a letter, where the letter does not have 'num' letters between it 
+ *  and the end of the alphabet. Ex. c10 is valid, w10 is invalid. */
+static char checkNumValidity(char c, size_t num) {
     if ((c + num) > ASCII_z) return 0;
 
     return 1;
 }
 
-static size_t emptyString(char* input) {
+/*  This function returns a 1 if the inputted string is empty, and 0 otherwise. */
+static char emptyString(char* input) {
     return (input[0] == '\0');
 }
 
+/*  This function converts the inputted number to its character ascii value. Ex. turn 2 into '2'. */
 static char singleNumToChar(size_t num) {
     return (char)(num + ASCII_0);
 }
 
+/*  This function null terminates the output buffer. If the output buffer size is greater than the
+ *  current buf_index, the null terminator is inputted at buf_index (end of string). If the
+ *  buf_index equals the output buffer size, the last character in the output buffer is overwritten
+ *  with a null terminator so as to not exceed the output buffer size. */
 static void nullTermBuffer(char* output_buffer, size_t output_buffer_size, int buf_index) {
 
     // Null terminate output buffer
@@ -221,8 +238,13 @@ static void nullTermBuffer(char* output_buffer, size_t output_buffer_size, int b
     }
 }
 
-int main()
-{
+/*  This function is used for printing error messages. */
+static void logError(char* errorMsg) {
+    printf("Error: %s\n", errorMsg);
+}
+
+int main() {
+
     char decompress_this[] = "c3j3d8js3bsj2k4bo3k";
     char compress_this[] = "ytuvwxyghijcdhijklmbcdefklmnopqopqrscdefghicdefghhijhijqrstuvwxmnovghwssthijklmnopfghijklmnrstuqrstuv";
 
@@ -241,101 +263,84 @@ int main()
     char cresult[5];
     compress(ctest, cresult, sizeof(cresult));
     assert(strcmp(cresult, "a2") == 0);
-    //printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", ctest, cresult, sizeof(cresult));
 
     char ctest1[] = "abcjklmn";
     char cresult1[100];
     compress(ctest1, cresult1, sizeof(cresult1));
-//    printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", ctest1, cresult1, sizeof(cresult1));
     assert(strcmp(cresult1, "a2j4") == 0);
 
     char ctest2[] = "abcjlmnoab";
     char cresult2[100];
     compress(ctest2, cresult2, sizeof(cresult2));
     assert(strcmp(cresult2, "a2jl3a1") == 0);
-//    printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", ctest2, cresult2, sizeof(cresult2));
 
     char ctest3[] = "abcjlmnoabcdefghijklmnopqrs";
     char cresult3[100];
     compress(ctest3, cresult3, sizeof(cresult3));
     assert(strcmp(cresult3, "a2jl3a18") == 0);
-    //printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", ctest3, cresult3, sizeof(cresult3));
 
     char ctest4[] = "abcjklmn";
-    char cresult4[4];
+    char cresult4[4];   // Buffer size too small
     compress(ctest4, cresult4, sizeof(cresult4));
     assert(strcmp(cresult4, "a2j") == 0);
-    //printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", ctest4, cresult4, sizeof(cresult4));
 
     char ctest5[] = "abcjlmnoabcdefghijklmnopqrs";
-    char cresult5[8];
+    char cresult5[8];   // Buffer size too small
     compress(ctest5, cresult5, sizeof(cresult5));
     assert(strcmp(cresult5, "a2jl3a1") == 0);
-    //printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", ctest5, cresult5, sizeof(cresult5));
 
     char ctest6[] = "aidjencls";
-    char cresult6[5];
+    char cresult6[5];   // Buffer size too small
     compress(ctest6, cresult6, sizeof(cresult6));
     assert(strcmp(cresult6, "aidj") == 0);
-    //printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", ctest6, cresult6, sizeof(cresult6));
 
-    char ctest7[] = "";
+    char ctest7[] = "";     // Empty string
     char cresult7[5];
     compress(ctest7, cresult7, sizeof(cresult7));
-//    printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", ctest7, cresult7, sizeof(cresult7));
 
     // Testing of decompress function
     char test[] = "c3gj4";
-    char result[3];
+    char result[3];     // Buffer size too small
     decompress(test, result, sizeof(result));
-//    printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", test, result, sizeof(result));
     assert(strcmp(result, "cd") == 0);
 
     char test1[] = "c3gj4";
     char result1[20];
     decompress(test1, result1, sizeof(result1));
     assert(strcmp(result1, "cdefgjklmn") == 0);
-    //printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", test1, result1, sizeof(result1));
 
     char test2[] = "c20";
-    char result2[6];
+    char result2[6];    // Buffer size too small
     decompress(test2, result2, sizeof(result2));
     assert(strcmp(result2, "cdefg") == 0);
-    //printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", test2, result2, sizeof(result2));
 
     char test3[] = "c20";
     char result3[100];
     decompress(test3, result3, sizeof(result3));
     assert(strcmp(result3, "cdefghijklmnopqrstuvw") == 0);
-    //printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", test3, result3, sizeof(result3));
 
-    char test4[] = "c20j4a8z3";
+    char test4[] = "c20j4a8z3";     // Invalid data
     char result4[100];
     decompress(test4, result4, sizeof(result4));
-//    printf("Testtest4= result4,, Result = %s, sizeof(result) = %zu\n\n", test4, result4, sizeof(result4));
 
     char test5[] = "casdflkui";
-    char result5[7];
+    char result5[7];    // Buffer too small
     decompress(test5, result5, sizeof(result5));
     assert(strcmp(result5, "casdfl") == 0);
-    //printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", test5, result5, sizeof(result5));
 
     char test6[] = "casdflkui";
     char result6[15];
     decompress(test6, result6, sizeof(result6));
     assert(strcmp(result6, "casdflkui") == 0);
-    //printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", test6, result6, sizeof(result6));
 
-    char test7[] = "w9";
+    char test7[] = "w9";    // Invalid data
     char result7[15];
     decompress(test7, result7, sizeof(result7));
-//    printf("Test = result7,, Result = %s, sizeof(result) = %zu\n\n", test7, result7, sizeof(result7));
 
-    char test8[] = "";
+    char test8[] = "";  // Empty string
     char result8[15];
     decompress(test8, result8, sizeof(result8));
     assert(strcmp(result8, "") == 0);
-//    printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", test8, result8, sizeof(result8));
 
     // Testing of isLetter
     char ch = 'a';
