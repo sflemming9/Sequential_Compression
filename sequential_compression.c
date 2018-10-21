@@ -62,6 +62,17 @@ static char singleNumToChar(size_t num);
 static void nullTermBuffer(char* output_buffer, size_t output_buffer_size, int buf_index);
 static void logError(char* errorMsg);
 
+/* Testing Functions */
+static void testCompress();
+static void testDecompress();
+static void testIsLetter();
+static void testIsNumber();
+static void testCharToSingleNum();
+static void testCharToDoubleNum();
+static void testCheckNumValidity();
+static void testSingleNumToChar();
+
+
 void compress(char * string_to_compress, char * output_buffer, size_t output_buffer_size) {
 
     // Ensure input is not an empty string
@@ -188,13 +199,13 @@ static size_t charToSingleNum(char c) {
     return (size_t)(c - ASCII_0);
 }
 
-/*  This function returns the two digit number value of the input 'cd'. It is assumed both c 
+/*  This function returns the two digit number value of the input 'cd'. It is assumed both c
  *  and d are between '0' and '9'. */
 static size_t charToDoubleNum(char c, char d) {
     return (size_t) (((c - ASCII_0) * 10) + (d - ASCII_0));
 }
 
-/*  This function inputs 'num' sequential letters into the output buffer without exceeding the 
+/*  This function inputs 'num' sequential letters into the output buffer without exceeding the
  *  output buffer size. The updated buf_index is returned. */
 static size_t generate(char c, size_t num, size_t output_buffer_size, int buf_index, char* output_buffer) {
     char seq_ch = c;
@@ -206,7 +217,7 @@ static size_t generate(char c, size_t num, size_t output_buffer_size, int buf_in
 }
 
 /*  This function returns a 0 for invalid data and a 1 otherwise. Invalid data is characterized
- *  by a number following a letter, where the letter does not have 'num' letters between it 
+ *  by a number following a letter, where the letter does not have 'num' letters between it
  *  and the end of the alphabet. Ex. c10 is valid, w10 is invalid. */
 static char checkNumValidity(char c, size_t num) {
     if ((c + num) > ASCII_z) return 0;
@@ -261,47 +272,20 @@ int main() {
     printf("Decompressed output: %s \n", decompress_result);
 
     /* Testing */
+    testCompress();
+    testDecompress();
+    testIsLetter();
+    testIsNumber();
+    testCharToSingleNum();
+    testCharToDoubleNum();
+    testCheckNumValidity();
+    testSingleNumToChar();
 
-    // Testing of compress function
-    char ctest[] = "abc";
-    char cresult[5];
-    compress(ctest, cresult, sizeof(cresult));
-    assert(strcmp(cresult, "a2") == 0);
+    return 0;
+}
 
-    char ctest1[] = "abcjklmn";
-    char cresult1[100];
-    compress(ctest1, cresult1, sizeof(cresult1));
-    assert(strcmp(cresult1, "a2j4") == 0);
-
-    char ctest2[] = "abcjlmnoab";
-    char cresult2[100];
-    compress(ctest2, cresult2, sizeof(cresult2));
-    assert(strcmp(cresult2, "a2jl3a1") == 0);
-
-    char ctest3[] = "abcjlmnoabcdefghijklmnopqrs";
-    char cresult3[100];
-    compress(ctest3, cresult3, sizeof(cresult3));
-    assert(strcmp(cresult3, "a2jl3a18") == 0);
-
-    char ctest4[] = "abcjklmn";
-    char cresult4[4];   // Buffer size too small
-    compress(ctest4, cresult4, sizeof(cresult4));
-    assert(strcmp(cresult4, "a2j") == 0);
-
-    char ctest5[] = "abcjlmnoabcdefghijklmnopqrs";
-    char cresult5[8];   // Buffer size too small
-    compress(ctest5, cresult5, sizeof(cresult5));
-    assert(strcmp(cresult5, "a2jl3a1") == 0);
-
-    char ctest6[] = "aidjencls";
-    char cresult6[5];   // Buffer size too small
-    compress(ctest6, cresult6, sizeof(cresult6));
-    assert(strcmp(cresult6, "aidj") == 0);
-
-    char ctest7[] = "";     // Empty string
-    char cresult7[5];
-    compress(ctest7, cresult7, sizeof(cresult7));
-
+/*  This function tests decompressing strings */
+static void testDecompress() {
     // Testing of decompress function
     char test[] = "c3gj4";
     char result[3];     // Buffer size too small
@@ -346,20 +330,76 @@ int main() {
     decompress(test8, result8, sizeof(result8));
     assert(strcmp(result8, "") == 0);
 
+    char test9[] = "a3g4j4g4a1ga4gaj";
+    char result9[100];
+    decompress(test9, result9, sizeof(result9));
+    assert(strcmp(result9, "abcdghijkjklmnghijkabgabcdegaj") == 0);
+}
+
+/*  This function tests compressing strings */
+static void testCompress() {
+    // Testing of compress function
+    char ctest[] = "abc";
+    char cresult[5];
+    compress(ctest, cresult, sizeof(cresult));
+    assert(strcmp(cresult, "a2") == 0);
+
+    char ctest1[] = "abcjklmn";
+    char cresult1[100];
+    compress(ctest1, cresult1, sizeof(cresult1));
+    assert(strcmp(cresult1, "a2j4") == 0);
+
+    char ctest2[] = "abcjlmnoab";
+    char cresult2[100];
+    compress(ctest2, cresult2, sizeof(cresult2));
+    assert(strcmp(cresult2, "a2jl3a1") == 0);
+
+    char ctest3[] = "abcjlmnoabcdefghijklmnopqrs";
+    char cresult3[100];
+    compress(ctest3, cresult3, sizeof(cresult3));
+    assert(strcmp(cresult3, "a2jl3a18") == 0);
+
+    char ctest4[] = "abcjklmn";
+    char cresult4[4];   // Buffer size too small
+    compress(ctest4, cresult4, sizeof(cresult4));
+    assert(strcmp(cresult4, "a2j") == 0);
+
+    char ctest5[] = "abcjlmnoabcdefghijklmnopqrs";
+    char cresult5[8];   // Buffer size too small
+    compress(ctest5, cresult5, sizeof(cresult5));
+    assert(strcmp(cresult5, "a2jl3a1") == 0);
+
+    char ctest6[] = "aidjencls";
+    char cresult6[5];   // Buffer size too small
+    compress(ctest6, cresult6, sizeof(cresult6));
+    assert(strcmp(cresult6, "aidj") == 0);
+
+    char ctest7[] = "";     // Empty string
+    char cresult7[5];
+    compress(ctest7, cresult7, sizeof(cresult7));
+
+    char ctest8[] = "abcdghijkjklmnghijkabgabcdegaj";
+    char cresult8[100];
+    compress(ctest8, cresult8, sizeof(cresult8));
+    assert(strcmp(cresult8, "a3g4j4g4a1ga4gaj") == 0);
+}
+
+/*  This function is used for testing isLetter */
+static void testIsLetter() {
+
     // Testing of isLetter
-    char ch = 'a';
-    assert(isLetter(ch) == 1);
+    char ch_lower = 'a';
+    char ch_upper = 'A';
+    for(int i = 0; i < 26; i++) {
+        // Test isLetter is correct for all upper and lower case characters
+        assert(isLetter(ch_lower) == 1);
+        ch_lower++;
 
-    ch = 'z';
-    assert(isLetter(ch) == 1);
+        assert(isLetter(ch_upper) == 0);
+        ch_upper++;
+    }
 
-    ch = 'A';
-    assert(isLetter(ch) == 0);
-
-    ch = 'Z';
-    assert(isLetter(ch) == 0);
-
-    ch = '0';
+    char ch = '0';
     assert(isLetter(ch) == 0);
 
     ch = '9';
@@ -370,9 +410,12 @@ int main() {
 
     ch = '-';
     assert(isLetter(ch) == 0);
+}
 
+/*  This function is used for testing isNumber */
+static void testIsNumber() {
     // Testing of isNumber
-    ch = 'a';
+    char ch = 'a';
     assert(isNumber(ch) == 0);
 
     ch = 'z';
@@ -395,6 +438,11 @@ int main() {
 
     ch = '-';
     assert(isNumber(ch) == 0);
+
+}
+
+/*  This function is used for testing charToSingleNum */
+static void testCharToSingleNum() {
 
     // Testing of charToSingleNum
     char num = '0';
@@ -405,9 +453,13 @@ int main() {
 
     num = '9';
     assert(charToSingleNum(num) == 9);
+}
+
+/*  This function is used for testing charToDoubleNum */
+static void testCharToDoubleNum() {
 
     // Testing of charToDoubleNum
-    num = '0';
+    char num = '0';
     char num2 = '0';
     assert(charToDoubleNum(num, num2) == 0);
 
@@ -426,10 +478,14 @@ int main() {
     num = '9';
     num2 = '0';
     assert(charToDoubleNum(num, num2) == 90);
+}
+
+/*  This function is used for testing checkNumValidity */
+static void testCheckNumValidity() {
 
     // Testing checkNumValidity
-    ch = 'x';
-    num = 1;
+    char ch = 'x';
+    int num = 1;
     assert(checkNumValidity(ch, num) == 1);
 
     ch = 'x';
@@ -447,15 +503,15 @@ int main() {
     ch = 'z';
     num = 1;
     assert(checkNumValidity(ch, num) == 0);
+}
+
+/*  This function is used for testing singleNumToChar */
+static void testSingleNumToChar() {
 
     // Testing singleNumToChar
-    num = 8;
+    int num = 8;
     assert(singleNumToChar(num) == '8');
 
     num = 0;
     assert(singleNumToChar(num) == '0');
-
-    return 0;
 }
-
-
