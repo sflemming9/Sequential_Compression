@@ -165,12 +165,37 @@ int main()
     printf("to decompress: %s \n", decompress_this);
     //Implement line below
     //printf("Decompressed output: %s \n", xxxx );
-    
+
     /* Testing */
     char test[] = "c3gj4";
-    char result[20];
+    char result[3];
     decompress(test, result, sizeof(result));
-    printf("Result = %s\n", result);
+    printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", test, result, sizeof(result));
+
+    char test1[] = "c3gj4";
+    char result1[20];
+    decompress(test1, result1, sizeof(result1));
+    printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", test1, result1, sizeof(result1));
+
+    char test2[] = "c20";
+    char result2[6];
+    decompress(test2, result2, sizeof(result2));
+    printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", test2, result2, sizeof(result2));
+
+    char test3[] = "c20";
+    char result3[100];
+    decompress(test3, result3, sizeof(result3));
+    printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", test3, result3, sizeof(result3));
+
+    char test4[] = "c20j4a8z3";
+    char result4[100];
+    decompress(test4, result4, sizeof(result4));
+    printf("Test = %s, Result = %s, sizeof(result) = %zu\n", test4, result4, sizeof(result4));
+
+    //char test5[] = "casdflkui";
+    //char result5[7];
+    //decompress(test5, result5, sizeof(result5));
+    //printf("Test = %s, Result = %s, sizeof(result) = %zu\n", test5, result5, sizeof(result5));
 
     // Testing of isLetter
     char ch = 'a';
