@@ -367,6 +367,36 @@ int main()
     printf("charToDoubleNum unit tests passed.\n");
 
     // Testing checkNumValidity
+    ch = 'x';
+    num = 1;
+    assert(checkNumValidity(ch, num) == 1);
+
+    ch = 'x';
+    num = 10;
+    assert(checkNumValidity(ch, num) == 0);
+
+    ch = 'a';
+    num = 100;
+    assert(checkNumValidity(ch, num) == 0);
+
+    ch = 'a';
+    num = 10;
+    assert(checkNumValidity(ch, num) == 1);
+
+    ch = 'z';
+    num = 1;
+    assert(checkNumValidity(ch, num) == 0);
+
+    printf("checkNumValidity unit tests passed.\n");
+
+    // Testing singleNumToChar
+    num = 8;
+    assert(singleNumToChar(num) == '8');
+
+    num = 0;
+    assert(singleNumToChar(num) == '0');
+
+    printf("singleNumToChar unit tests passed.\n");
 
     return 0;
 }
