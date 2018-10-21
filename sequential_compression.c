@@ -73,6 +73,7 @@ void compress(char * string_to_compress, char * output_buffer, size_t output_buf
     while (buf_index < (output_buffer_size - 1)) {
 
         char curr = string_to_compress[comp_index];
+        printf("Outer while loop, curr = %c\n", curr);
         comp_index++;
 
         output_buffer[buf_index] = curr;
@@ -81,17 +82,19 @@ void compress(char * string_to_compress, char * output_buffer, size_t output_buf
         if (curr == '\0') break;
 
         char next = string_to_compress[comp_index];
+        printf("Outer while loop, next = %c\n", next);
         size_t count = 0;
 
         while (next == (curr + 1)) {
             count++;
             comp_index++;
-            next = string_to_compress[comp_index];
             curr = next;
+            next = string_to_compress[comp_index];
 
             // TODO don't go out of bounds
 
         }
+        printf("count = %zu\n", count);
 
         if ((count > 0) && (count < 10)) {
             output_buffer[buf_index] = singleNumToChar(count);    // count can be single or double digit
@@ -99,8 +102,8 @@ void compress(char * string_to_compress, char * output_buffer, size_t output_buf
             output_buffer[buf_index] = singleNumToChar(count / 10);
             buf_index++;
             output_buffer[buf_index] = singleNumToChar(count % 10);
-            
         }
+        buf_index++;
     }
 
     // Null terminate output buffer
