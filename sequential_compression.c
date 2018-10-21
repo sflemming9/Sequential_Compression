@@ -98,12 +98,13 @@ void compress(char * string_to_compress, char * output_buffer, size_t output_buf
 
         if ((count > 0) && (count < 10)) {
             output_buffer[buf_index] = singleNumToChar(count);    // count can be single or double digit
+            buf_index++;
         } else if (count >= 10) {
             output_buffer[buf_index] = singleNumToChar(count / 10);
             buf_index++;
             output_buffer[buf_index] = singleNumToChar(count % 10);
+            buf_index++;
         }
-        buf_index++;
     }
 
     // Null terminate output buffer
@@ -191,13 +192,9 @@ static size_t charToDoubleNum(char c, char d) {
 
 static size_t generate(char c, size_t num, size_t output_buffer_size, int buf_index, char* output_buffer) {
     char seq_ch = c;
-    //printf("generate: seq_ch = %c\n", seq_ch);
-    //printf("generate: buf_index = %d\n", buf_index);
-    //printf("entering generate: output = %s\n", output_buffer);
     for (size_t i = 0; (i < num) && (buf_index < output_buffer_size); i++) {
         output_buffer[buf_index] = ++seq_ch;
         buf_index++;
-        //printf("generate: output = %s\n", output_buffer);
     }
     return buf_index;
 }
@@ -234,6 +231,21 @@ int main()
     char cresult[5];
     compress(ctest, cresult, sizeof(cresult));
     printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", ctest, cresult, sizeof(cresult));
+
+    char ctest1[] = "abcjklmn";
+    char cresult1[100];
+    compress(ctest1, cresult1, sizeof(cresult1));
+    printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", ctest1, cresult1, sizeof(cresult1));
+
+    char ctest2[] = "abcjlmnoab";
+    char cresult2[100];
+    compress(ctest2, cresult2, sizeof(cresult2));
+    printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", ctest2, cresult2, sizeof(cresult2));
+
+    char ctest3[] = "abcjlmnoabcdefghijklmnopqrs";
+    char cresult3[100];
+    compress(ctest3, cresult3, sizeof(cresult3));
+    printf("Test = %s, Result = %s, sizeof(result) = %zu\n\n", ctest3, cresult3, sizeof(cresult3));
 
     //char test[] = "c3gj4";
     //char result[3];
